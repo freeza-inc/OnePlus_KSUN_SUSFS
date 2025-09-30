@@ -262,6 +262,16 @@ runs:
           fi
         fi
         patch -p1 < 50_add_susfs_in_${{ env.SUSFS_KERNEL_BRANCH }}.patch || true
+       cd ./net/ipv4
+       sed -i 's/net->ipv4.sysctl_tcp_ecn = 2;/net->ipv4.sysctl_tcp_ecn = 1;/' tcp_ipv4.c
+       grep "sysctl_tcp_ecn" tcp_ipv4.c
+       sed -i '/\.procname[[:space:]]*=[[:space:]]*"tcp_ecn"/, /^[[:space:]]*\}/ s/SYSCTL_TWO/SYSCTL_ONE/' sysctl_net_ipv4.c
+       grep -A6 '\.procname.*tcp_ecn' sysctl_net_ipv4.c
+       sed -i 's/net->ipv4.sysctl_tcp_pacing_ss_ratio = 200;/net->ipv4.sysctl_tcp_pacing_ss_ratio = 180;/' tcp_ipv4.c
+       sed -i 's/net->ipv4.sysctl_tcp_pacing_ca_ratio = 120;/net->ipv4.sysctl_tcp_pacing_ca_ratio = 110;/' tcp_ipv4.c
+       grep "sysctl_tcp_pacing" tcp_ipv4.c
+       ls -t | grep -E 'tcp_|sysctl_'
+       cd ../../
         KERNEL_VERSION="${{ env.KERNEL_VER }}"
         MIN_VERSION="5.16"
         if [ "$(printf '%s\n' "$KERNEL_VERSION" "$MIN_VERSION" | sort -V | head -n1)" = "$KERNEL_VERSION" ]; then
@@ -328,6 +338,9 @@ runs:
         CONFIG_TCP_CONG_BBR=y
         CONFIG_NET_SCH_FQ=y
         CONFIG_NET_SCH_FQ_CODEL=y
+        CONFIG_DEFAULT_TCP_CONG="bbr"
+        CONFIG_DEFAULT_BBR=y
+        CONFIG_DEFAULT_CUBIC=n
         EOF
 
     - name: Add TTL Target Support
@@ -339,6 +352,7 @@ runs:
         CONFIG_IP_NF_TARGET_TTL=y
         CONFIG_IP6_NF_TARGET_HL=y
         CONFIG_IP6_NF_MATCH_HL=y
+        CONFIG_IP_NF_TARGET_ECN=y
         EOF
 
     - name: Add Build based configs
@@ -352,6 +366,20 @@ runs:
         CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y
         CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE_O3=n
         CONFIG_OPTIMIZE_INLINING=y
+        EOF
+
+    - name: Add Other optimizations
+      shell: bash
+      run: |
+        set -euo pipefail
+        cd "$CONFIG/kernel_platform"
+        cat >> common/arch/arm64/configs/gki_defconfig <<EOF
+        CONFIG_ZRAM_DEF_COMP="lz4"
+        CONFIG_ZRAM_DEF_COMP_LZ4=y
+        CONFIG_ZRAM_DEF_COMP_LZO=n
+        CONFIG_ZRAM_DEF_COMP_LZORLE=n
+        CONFIG_RCU_LAZY_DEFAULT_OFF=n
+        CONFIG_RCU_TRACE=n
         EOF
 
     - name: Save Build Metadata
