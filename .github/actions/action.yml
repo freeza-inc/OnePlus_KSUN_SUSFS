@@ -1564,8 +1564,8 @@ runs:
         retry_clone "https://github.com/maxsteeel/nomount.git" "master"
         
         cd "$COMMON_KERNEL_FOLDER"
-        # patch -p1 -F3 --no-backup-if-mismatch < "$NOMOUNT_FOLDER/$OP_ANDROID_VERSION-$OP_KERNEL_VERSION/KernelSU-Next/patches/51_enhanced_susfs-$OP_ANDROID_VERSION-$OP_KERNEL_VERSION.patch"
-        patch -p1 -F3 --no-backup-if-mismatch < "$NOMOUNT_FOLDER/kernel/patches/nomount_6.12_kernel_integration.patch"
+        # patch -p1 -F3 --no-backup-if-mismatch < "$NOMOUNT_FOLDER/kernel/patches/nomount_6.12_kernel_integration.patch"
+        patch -p1 --forward < "$NOMOUNT_FOLDER/kernel/patches/nomount_6.12_kernel_integration.patch"
         cp "$NOMOUNT_FOLDER/kernel/src/*" ""$COMMON_KERNEL_FOLDER/fs/"
 
         cat >> "$COMMON_KERNEL_FOLDER/arch/arm64/configs/gki_defconfig" <<EOF
