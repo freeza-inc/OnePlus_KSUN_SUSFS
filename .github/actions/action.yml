@@ -1609,7 +1609,7 @@ runs:
           return 1
         }
         
-        retry_clone "https://github.com/Enginex0/Super-Builders.git" "master"
+        retry_clone "https://github.com/Enginex0/Super-Builders.git" "main"
         
         cd "$COMMON_KERNEL_FOLDER"
         # patch -p1 -F3 --no-backup-if-mismatch < "$ZEROMOUNT_FOLDER/$OP_ANDROID_VERSION-$OP_KERNEL_VERSION/KernelSU-Next/patches/51_enhanced_susfs-$OP_ANDROID_VERSION-$OP_KERNEL_VERSION.patch"
