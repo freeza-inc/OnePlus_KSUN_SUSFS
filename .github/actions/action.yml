@@ -1565,7 +1565,7 @@ runs:
         cd "$COMMON_KERNEL_FOLDER"
         # patch -p1 -F3 --no-backup-if-mismatch < "$NOMOUNT_FOLDER/kernel/patches/nomount_6.12_kernel_integration.patch"
         patch -p1 --forward --fuzz=3 < "$NOMOUNT_FOLDER/kernel/patches/nomount_6.12_kernel_integration.patch"
-        cp "$NOMOUNT_FOLDER/kernel/src/*" "$COMMON_KERNEL_FOLDER/fs/"
+        cp "$NOMOUNT_FOLDER/kernel/src/"* "$COMMON_KERNEL_FOLDER/fs/"
 
         cat >> "$COMMON_KERNEL_FOLDER/arch/arm64/configs/gki_defconfig" <<EOF
         CONFIG_NOMOUNT=y
