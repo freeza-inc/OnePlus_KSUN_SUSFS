@@ -1561,7 +1561,7 @@ runs:
           return 1
         }
         
-        retry_clone "https://github.com/maxsteeel/nomount.git" "master"
+        retry_clone "https://github.com/maxsteeel/nomount.git" "dev"
         
         cd "$COMMON_KERNEL_FOLDER"
         # patch -p1 -F3 --no-backup-if-mismatch < "$NOMOUNT_FOLDER/kernel/patches/nomount_6.12_kernel_integration.patch"
