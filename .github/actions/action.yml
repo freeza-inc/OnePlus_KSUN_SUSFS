@@ -1999,6 +1999,10 @@ runs:
         source "$KERNEL_PLATFORM_FOLDER/build/kernel/_setup_env.sh" 2>/dev/null || true
         set -u
         
+        echo '#!/bin/bash' > "$COMMON_KERNEL_FOLDER/ld-wrapper"
+        echo 'ld.lld "$@" --thinlto-jobs=$(nproc --all)' >> "$COMMON_KERNEL_FOLDER/ld-wrapper"
+        chmod +x "$COMMON_KERNEL_FOLDER/ld-wrapper"
+        
         KERNEL_BUILD_DATE=$(date -u)
         export SOURCE_DATE_EPOCH=$COMMIT_TIMESTAMP
         export KBUILD_BUILD_TIMESTAMP="$KERNEL_BUILD_DATE"
@@ -2065,7 +2069,7 @@ runs:
         fi
         echo "============================================"
         
-        make O="$OUT" gki_defconfig
+        make LD="$COMMON_KERNEL_FOLDER/ld-wrapper" HOSTLD="$COMMON_KERNEL_FOLDER/ld-wrapper" O="$OUT" gki_defconfig
         
         LOCAL_LOCALVERSION="${CUSTOM_LOCALVERSION:--OP-BeastMode}"
         if [ -n "${LOCAL_LOCALVERSION:-}" ]; then
@@ -2116,7 +2120,7 @@ runs:
         esac
         
         
-        make O="$OUT" olddefconfig
+        make LD="$COMMON_KERNEL_FOLDER/ld-wrapper" HOSTLD="$COMMON_KERNEL_FOLDER/ld-wrapper" O="$OUT" olddefconfig
         
         KCFLAGS="$KCFLAGS -Wno-error -pipe ${KCFLAGS_EXTRA}"
         KCPPFLAGS="$KCPPFLAGS -DCONFIG_OPTIMIZE_INLINING"
@@ -2156,7 +2160,7 @@ runs:
         BUILD_START=$(date +%s)
         set -o pipefail
         
-        make -j"$(nproc --all)" O="$OUT" KCFLAGS="$KCFLAGS" KCPPFLAGS="$KCPPFLAGS" Image 2>&1 | tee build.log
+        make LD="$COMMON_KERNEL_FOLDER/ld-wrapper" HOSTLD="$COMMON_KERNEL_FOLDER/ld-wrapper" -j"$(nproc --all)" O="$OUT" KCFLAGS="$KCFLAGS" KCPPFLAGS="$KCPPFLAGS" CONFIG_FAKE_DISABLE="$CONFIG_FAKE_DISABLE" Image 2>&1 | tee build.log
         
         BUILD_END=$(date +%s)
         BUILD_TIME=$((BUILD_END - BUILD_START))
