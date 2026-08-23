@@ -1655,6 +1655,7 @@ runs:
         echo "Add Tmpfs Support"
         cat >> "$COMMON_KERNEL_FOLDER/arch/arm64/configs/gki_defconfig" <<EOF
         CONFIG_TMPFS_XATTR=y
+        CONFIG_KERNFS=y
         CONFIG_TMPFS_POSIX_ACL=y
         EOF
 
