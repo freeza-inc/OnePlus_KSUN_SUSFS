@@ -1563,48 +1563,9 @@ runs:
       run: |
         set -euo pipefail
         echo "::group::Apply NoMount Support"
-        retry_clone() {
-          local url="$1"
-          local branch="${2:-main}"
-          local depth="${3:-1}"
-          local dir="$(basename "$url" .git)"
-          local max_attempts=3
-          local attempt=1
-          
-          # Build git clone args
-          local clone_args=(--branch "$branch")
-          if [ "$depth" != "0" ] && [ -n "$depth" ]; then
-            clone_args+=(--depth "$depth")
-          fi
-          
-          while [ $attempt -le $max_attempts ]; do
-            echo "🔄 Attempt $attempt/$max_attempts: cloning $url ($branch)${depth:+ [depth=$depth]}"
-            
-            # Clone with dynamic args
-            git clone "${clone_args[@]}" "$url" "$dir" && {
-              echo "✅ Success"
-              return 0
-            }
-            
-            echo "❌ Failed, cleaning up..."
-            rm -rf "$dir" 2>/dev/null
-            sleep $((attempt++ * 5))
-          done
-          
-          echo "💥 All attempts failed"
-          return 1
-        }
-        
-        retry_clone "https://github.com/maxsteeel/nomount.git" "dev"
         
         cd "$COMMON_KERNEL_FOLDER"
-        # patch -p1 -F3 --no-backup-if-mismatch < "$NOMOUNT_FOLDER/kernel/patches/nomount_6.12_kernel_integration.patch"
-        patch -p1 --forward --fuzz=3 < "$NOMOUNT_FOLDER/kernel/patches/nomount_6.12_kernel_integration.patch"
-        cp "$NOMOUNT_FOLDER/kernel/src/"* "$COMMON_KERNEL_FOLDER/fs/"
-
-        cat >> "$COMMON_KERNEL_FOLDER/arch/arm64/configs/gki_defconfig" <<EOF
-        CONFIG_NOMOUNT=y
-        EOF
+        curl https://raw.githubusercontent.com/maxsteeel/nomount/refs/heads/dev/kernel/setup.sh | bash -s dev
 
     - name: Apply Zeromount Support
       shell: bash
