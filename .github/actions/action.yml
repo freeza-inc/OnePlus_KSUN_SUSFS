@@ -919,13 +919,13 @@ runs:
     - name: Apply Fake Patches
       shell: bash
       run: |
-        kotlin "$GITHUB_WORKSPACE/kernel_workspace/Action-Build/scripts/PatchFakePatches.kts" apply "$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/common"
+        kotlin "$GITHUB_WORKSPACE/Action-Build/scripts/PatchFakePatches.kts" apply "$COMMON_KERNEL_FOLDER"
 
     - name: Revert and Postfix Fake Patches
       shell: bash
       run: |
-        kotlin "$GITHUB_WORKSPACE/kernel_workspace/Action-Build/scripts/PatchFakePatches.kts" postfix "$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/common"
-        kotlin "$GITHUB_WORKSPACE/kernel_workspace/Action-Build/scripts/PatchFakePatches.kts" revert "$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/common"
+        kotlin "$GITHUB_WORKSPACE/Action-Build/scripts/PatchFakePatches.kts" postfix "$COMMON_KERNEL_FOLDER"
+        kotlin "$GITHUB_WORKSPACE/Action-Build/scripts/PatchFakePatches.kts" revert "$COMMON_KERNEL_FOLDER"
 
     - name: Add KernelSU Next
       shell: bash
