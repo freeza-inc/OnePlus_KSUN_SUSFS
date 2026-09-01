@@ -905,27 +905,28 @@ runs:
       run: |
         set -euo pipefail
         cd "$KERNEL_PLATFORM_FOLDER"
+        git clone https://github.com/Numbersf/Action-Build.git -b KernelSU-Next
         rm -f common/android/abi_gki_protected_exports_* || true
         rm -f msm-kernel/android/abi_gki_protected_exports_* || true
         sed -i 's/protected_modules = \[.*\]/protected_modules = []/' common/modules.bzl || true
         df -h
-        git config --global user.email "freeza@gmail.com"
-        git config --global user.name "Build"
-        git remote add google-bbr https://github.com/google/bbr.git
-        git fetch google-bbr v3
-        git show-ref --verify --quiet refs/remotes/google-bbr/v3 || { echo "Error: google-bbr/v3 branch not found"; exit 1; }
-        git merge google-bbr/v3 --allow-unrelated-histories -m "Merge BBR v3 into kernel"
+        # git config --global user.email "freeza@gmail.com"
+        # git config --global user.name "Build"
+        # git remote add google-bbr https://github.com/google/bbr.git
+        # git fetch google-bbr v3
+        # git show-ref --verify --quiet refs/remotes/google-bbr/v3 || { echo "Error: google-bbr/v3 branch not found"; exit 1; }
+        # git merge google-bbr/v3 --allow-unrelated-histories -m "Merge BBR v3 into kernel"
 
     - name: Apply Fake Patches
       shell: bash
       run: |
-        kotlin "Action-Build/scripts/PatchFakePatches.kts" apply "$COMMON_KERNEL_FOLDER"
+        kotlin "$KERNEL_PLATFORM_FOLDER/Action-Build/scripts/PatchFakePatches.kts" apply "$COMMON_KERNEL_FOLDER"
 
     - name: Revert and Postfix Fake Patches
       shell: bash
       run: |
-        kotlin "Action-Build/scripts/PatchFakePatches.kts" postfix "$COMMON_KERNEL_FOLDER"
-        kotlin "Action-Build/scripts/PatchFakePatches.kts" revert "$COMMON_KERNEL_FOLDER"
+        kotlin "$KERNEL_PLATFORM_FOLDER/Action-Build/scripts/PatchFakePatches.kts" postfix "$COMMON_KERNEL_FOLDER"
+        kotlin "$KERNEL_PLATFORM_FOLDER/Action-Build/scripts/PatchFakePatches.kts" revert "$COMMON_KERNEL_FOLDER"
 
     - name: Add KernelSU Next
       shell: bash
