@@ -333,8 +333,8 @@ runs:
         git config --global pack.sparse true
         git config --global http.sslVerify false
 
-      - name: Setup Kotlin
-        run: |
+    - name: Setup Kotlin
+      run: |
           KOTLIN_VERSION="2.4.10"
           curl -sL "https://github.com/JetBrains/kotlin/releases/download/v${KOTLIN_VERSION}/kotlin-compiler-${KOTLIN_VERSION}.zip" -o kotlinc.zip
           unzip -q kotlinc.zip -d "$HOME"
@@ -915,14 +915,14 @@ runs:
         git show-ref --verify --quiet refs/remotes/google-bbr/v3 || { echo "Error: google-bbr/v3 branch not found"; exit 1; }
         git merge google-bbr/v3 --allow-unrelated-histories -m "Merge BBR v3 into kernel"
 
-      - name: Apply Fake Patches
-        run: |
-          kotlin "$GITHUB_WORKSPACE/kernel_workspace/Action-Build/scripts/PatchFakePatches.kts" apply "$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/common"
+    - name: Apply Fake Patches
+      run: |
+        kotlin "$GITHUB_WORKSPACE/kernel_workspace/Action-Build/scripts/PatchFakePatches.kts" apply "$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/common"
 
-      - name: Revert and Postfix Fake Patches
-        run: |
-          kotlin "$GITHUB_WORKSPACE/kernel_workspace/Action-Build/scripts/PatchFakePatches.kts" postfix "$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/common"
-          kotlin "$GITHUB_WORKSPACE/kernel_workspace/Action-Build/scripts/PatchFakePatches.kts" revert "$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/common"
+    - name: Revert and Postfix Fake Patches
+      run: |
+        kotlin "$GITHUB_WORKSPACE/kernel_workspace/Action-Build/scripts/PatchFakePatches.kts" postfix "$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/common"
+        kotlin "$GITHUB_WORKSPACE/kernel_workspace/Action-Build/scripts/PatchFakePatches.kts" revert "$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/common"
 
     - name: Add KernelSU Next
       shell: bash
