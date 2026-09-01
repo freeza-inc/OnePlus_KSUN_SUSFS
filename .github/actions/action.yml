@@ -334,11 +334,12 @@ runs:
         git config --global http.sslVerify false
 
     - name: Setup Kotlin
+      shell: bash
       run: |
-          KOTLIN_VERSION="2.4.10"
-          curl -sL "https://github.com/JetBrains/kotlin/releases/download/v${KOTLIN_VERSION}/kotlin-compiler-${KOTLIN_VERSION}.zip" -o kotlinc.zip
-          unzip -q kotlinc.zip -d "$HOME"
-          echo "$HOME/kotlinc/bin" >> "$GITHUB_PATH"
+        KOTLIN_VERSION="2.4.10"
+        curl -sL "https://github.com/JetBrains/kotlin/releases/download/v${KOTLIN_VERSION}/kotlin-compiler-${KOTLIN_VERSION}.zip" -o kotlinc.zip
+        unzip -q kotlinc.zip -d "$HOME"
+        echo "$HOME/kotlinc/bin" >> "$GITHUB_PATH"
 
     - name: Initialize and Sync Kernel Source
       shell: bash
